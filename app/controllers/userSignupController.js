@@ -7,7 +7,7 @@ exports.createUser = function (req, res) {
     name: req.body.name,
     password: req.body.password,
     category: req.body.category,
-    contact_number: req.body.contact_number
+    phone_number: req.body.phone_number
   };
 
   // Validate the category field
