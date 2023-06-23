@@ -1,4 +1,16 @@
 const UserModel = require("../models/userSignupModel");
+const nodemailer = require("nodemailer");
+
+// Configure nodemailer with your email service credentials
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: "robertchristian.rosales@gmail.com",
+    pass: "lxkepxxjeixoymtu",
+  },
+});
 
 exports.createUser = function (req, res) {
   const newUser = {
@@ -6,18 +18,8 @@ exports.createUser = function (req, res) {
     username: req.body.username,
     name: req.body.name,
     password: req.body.password,
-    category: req.body.category,
     phone_number: req.body.phone_number
   };
-
-  // Validate the category field
-  if (newUser.category !== "user" && newUser.category !== "guardian") {
-    console.error('Error creating user: invalid category');
-    return res.status(400).json({
-      error: 'Invalid category',
-      message: 'Only accepts: guardian or user'
-    });
-  }
 
   UserModel.create(newUser, (error, result) => {
     if (error) {
@@ -48,9 +50,26 @@ exports.createUser = function (req, res) {
       }
     } else {
       console.log("User created successfully");
+
+      // Send welcome email
+      const mailOptions = {
+        from: "ICVI Tech Accounts <noreply@gmail.com>",
+        to: newUser.email_add,
+        subject: "Welcome to ICVI",
+        text: "You are now registered and may continue to login!"
+            };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending welcome email: ", error);
+        } else {
+          console.log("Welcome email sent: ", info.response);
+        }
+      });
+
       res.status(201).json({
         message: "User created successfully",
-        data: result,
+        data: result
       });
     }
   });

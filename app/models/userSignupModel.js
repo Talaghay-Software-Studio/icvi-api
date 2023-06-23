@@ -45,7 +45,7 @@ User.create = (newUser, callback) => {
                   // Insert user details into the 'user_details' table
                   dbConn.query(
                     "INSERT INTO user_details (user_id, phone_number, name) VALUES (?, ?, ?)",
-                    [userId, newUser.contact_number, newUser.name],
+                    [userId, newUser.phone_number, newUser.name],
                     (error, result) => {
                       if (error) {
                         console.error("Error inserting user details into database: ", error);

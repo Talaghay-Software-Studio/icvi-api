@@ -95,7 +95,7 @@ exports.forgotPassword = (req, res) => {
       });
 
       const mailOptions = {
-        from: "Equal Travel Accounts <noreply@gmail.com>",
+        from: "ICVI Tech Accounts <noreply@gmail.com>",
         to: email_add,
         subject: "Reset your password",
         text: `Click on the following link to reset your password: ${resetLink}. This link will expire in 5 minutes`,

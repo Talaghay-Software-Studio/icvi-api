@@ -3,60 +3,49 @@ const bcrypt = require('bcrypt');
 
 const userLoginController = {};
 
-userLoginController.checkEmail = (req, res) => {
+userLoginController.checkEmail = async (req, res) => {
   const { email_or_username, password } = req.body;
 
-  UserModel.getByEmailOrUsername(email_or_username, (error, user) => {
-    if (error) {
-      console.error("Error checking email or username: ", error);
-      return res.status(500).send("Error checking email or username");
-    }
+  try {
+    // Get user by email or username
+    const user = await UserModel.getByEmailOrUsername(email_or_username);
 
     if (!user) {
       return res.status(404).send("User not found");
     }
 
     // Compare password
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err) {
-        console.error("Error comparing passwords: ", err);
-        return res.status(500).send("Error comparing passwords");
-      }
+    const isMatch = await bcrypt.compare(password, user.password);
 
-      if (!isMatch) {
-        return res.status(401).send("Invalid password");
-      }
+    if (!isMatch) {
+      return res.status(401).send("Invalid password");
+    }
 
-      // Password is correct, retrieve user details
-      UserModel.getUserDetails(user.id, (error, userDetails) => {
-        if (error) {
-          console.error("Error retrieving user details: ", error);
-          return res.status(500).send("Error retrieving user details");
+    // Retrieve user details
+    const userDetails = await UserModel.getUserDetails(user.id);
+
+    // Construct the response object with the desired fields
+    const response = {
+      message: "Login successful",
+      userDetails: [
+        {
+          id: user.id,
+          email_add: user.email_add,
+          username: user.username,
+          name: userDetails.name,
+          phone_number: userDetails.phone_number,
+          modified_at: user.modified_at,
+          created_at: user.created_at
         }
+      ]
+    };
 
-        // Construct the response object with the desired fields
-        const response = {
-          message: "Login successful",
-          userDetails: [
-            {
-              id: user.id,
-              user_id: user.user_id,
-              email_add: user.email_add,
-              username: user.username,
-              category: user.category,
-              name: user.name,
-              phone_number: user.phone_number,
-              modified_at: user.modified_at,
-              created_at: user.created_at,
-            },
-          ],
-        };
-
-        // Return the response
-        res.status(200).json(response);
-      });
-    });
-  });
+    // Return the response
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).send("Error during login");
+  }
 };
 
 module.exports = userLoginController;
