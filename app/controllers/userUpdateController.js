@@ -3,7 +3,6 @@ const UserModel = require("../models/userUpdateModel");
 exports.updateUser = function (req, res) {
   const updatedUser = {
     username: req.body.username,
-    password: req.body.password,
     name: req.body.name,
     phone_number: req.body.phone_number
   };

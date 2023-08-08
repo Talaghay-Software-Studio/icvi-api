@@ -1,5 +1,4 @@
 const dbConn = require("../config/db.config");
-const bcrypt = require('bcrypt');
 
 const UpdatedUser = {};
 
@@ -36,41 +35,31 @@ UpdatedUser.update = (userId, updatedUser, callback) => {
                 return callback("Username already exists", null);
               }
             } else {
-              // Hash the password
-              const saltRounds = 10;
-              const password = updatedUser.password.toString();
-              bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-                if (err) {
-                  console.error("Error hashing password: ", err);
-                  return callback(err, null);
-                } else {
-                  // Update the user in the 'user' table
-                  dbConn.query(
-                    "UPDATE user SET username = ?, password = ? WHERE id = ?",
-                    [updatedUser.username, hashedPassword, userId],
-                    (error, result) => {
-                      if (error) {
-                        console.error("Error updating user in database: ", error);
-                        return callback(error, null);
-                      } else {
-                        // Update user details in the 'user_details' table
-                        dbConn.query(
-                          "UPDATE user_details SET phone_number = ?, name = ? WHERE user_id = ?",
-                          [updatedUser.phone_number, updatedUser.name, userId],
-                          (error, result) => {
-                            if (error) {
-                              console.error("Error updating user details in database: ", error);
-                              return callback(error, null);
-                            } else {
-                              return callback(null, result);
-                            }
-                          }
-                        );
+              // Update the user in the 'user' table (without password)
+              dbConn.query(
+                "UPDATE user SET username = ? WHERE id = ?",
+                [updatedUser.username, userId],
+                (error, result) => {
+                  if (error) {
+                    console.error("Error updating user in database: ", error);
+                    return callback(error, null);
+                  } else {
+                    // Update user details in the 'user_details' table
+                    dbConn.query(
+                      "UPDATE user_details SET phone_number = ?, name = ? WHERE user_id = ?",
+                      [updatedUser.phone_number, updatedUser.name, userId],
+                      (error, result) => {
+                        if (error) {
+                          console.error("Error updating user details in database: ", error);
+                          return callback(error, null);
+                        } else {
+                          return callback(null, result);
+                        }
                       }
-                    }
-                  );
+                    );
+                  }
                 }
-              });
+              );
             }
           }
         );
