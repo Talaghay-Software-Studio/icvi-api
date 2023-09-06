@@ -4,22 +4,14 @@ const FeedbackModel = {};
 
 FeedbackModel.createFeedback = (feedbackData, callback) => {
   dbConn.query(
-    "INSERT INTO feedback (user_id, age, gender, impairment_category, q1_star, q2_star, q3_star, q4_star, q5_star, q6_star, q7_star, q8_star, q9_star, q10_star) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO feedback_table (user_id, age, gender, impairment_category, question_id, rating_star) VALUES (?, ?, ?, ?, ?, ?)", // Include question_id and rating_star
     [
       feedbackData.user_id,
       feedbackData.age,
       feedbackData.gender,
       feedbackData.impairment_category,
-      feedbackData.q1_star,
-      feedbackData.q2_star,
-      feedbackData.q3_star,
-      feedbackData.q4_star,
-      feedbackData.q5_star,
-      feedbackData.q6_star,
-      feedbackData.q7_star,
-      feedbackData.q8_star,
-      feedbackData.q9_star,
-      feedbackData.q10_star,
+      feedbackData.question_id, // Add question_id
+      feedbackData.rating_star, // Add rating_star
     ],
     (error, result) => {
       if (error) {

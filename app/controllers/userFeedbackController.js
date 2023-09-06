@@ -8,16 +8,8 @@ userFeedbackController.createFeedback = (req, res) => {
     age: req.body.age,
     gender: req.body.gender,
     impairment_category: req.body.impairment_category,
-    q1_star: req.body.q1_star,
-    q2_star: req.body.q2_star,
-    q3_star: req.body.q3_star,
-    q4_star: req.body.q4_star,
-    q5_star: req.body.q5_star,
-    q6_star: req.body.q6_star,
-    q7_star: req.body.q7_star,
-    q8_star: req.body.q8_star,
-    q9_star: req.body.q9_star,
-    q10_star: req.body.q10_star,
+    question_id: req.body.question_id, // Add question_id
+    rating_star: req.body.rating_star, // Add rating_star
   };
 
   FeedbackModel.createFeedback(feedbackData, (error, result) => {
