@@ -34,6 +34,11 @@ userLoginController.checkEmail = async (req, res) => {
           username: user.username,
           name: userDetails.name,
           phone_number: userDetails.phone_number,
+          category: user.category,
+          gender: userDetails.gender,
+          impairment_category: userDetails.impairment_category,
+          age: userDetails.age,
+          address: userDetails.address,
           modified_at: user.modified_at,
           created_at: user.created_at
         }

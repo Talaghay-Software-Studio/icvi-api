@@ -5,5 +5,6 @@ const analyticsController = require('../controllers/analyticsController');
 // Routes
 router.get("/getanalytics", analyticsController.getAnalytics);
 router.get("/useranalytics", analyticsController.getAnalytics2);
+router.get("/questionanalytics", analyticsController.getQuestionAnalytics);
 
 module.exports = router;

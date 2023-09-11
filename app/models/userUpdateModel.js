@@ -47,8 +47,8 @@ UpdatedUser.update = (userId, updatedUser, gender, impairmentCategory, callback)
                   } else {
                     // Update user details in the 'user_details' table
                     dbConn.query(
-                      "UPDATE user_details SET phone_number = ?, name = ?, gender = ?, impairment_category = ?, age = ? WHERE user_id = ?",
-                      [updatedUser.phone_number, updatedUser.name, gender, impairmentCategory, updatedUser.age, userId],
+                      "UPDATE user_details SET phone_number = ?, name = ?, gender = ?, impairment_category = ?, age = ?, address = ? WHERE user_id = ?",
+                      [updatedUser.phone_number, updatedUser.name, gender, impairmentCategory, updatedUser.age, updatedUser.address, userId],
                       (error, result) => {
                         if (error) {
                           console.error("Error updating user details in database: ", error);

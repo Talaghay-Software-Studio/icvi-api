@@ -59,4 +59,22 @@ analyticsController.getAnalytics2 = async (req, res) => {
   }
 };
 
+analyticsController.getQuestionAnalytics = async (req, res) => {
+  try {
+    const questionFeedbackData = await AnalyticsModel.getQuestionFeedbackAnalytics();
+
+    const responseData = [
+      {
+        type: "Question Feedback",
+        data: questionFeedbackData,
+      },
+    ];
+
+    return res.status(200).json({ data: responseData });
+  } catch (err) {
+    console.error("Error retrieving question feedback analytics: ", err);
+    return res.status(500).json({ message: "Error retrieving question feedback analytics." });
+  }
+};
+
 module.exports = analyticsController;

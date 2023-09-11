@@ -6,6 +6,7 @@ exports.updateUser = function (req, res) {
     name: req.body.name,
     phone_number: req.body.phone_number,
     age: req.body.age === 0 ? null : req.body.age, // Set age to null if it's 0
+    address: req.body.address.trim() || null, // Trim and set address to null if empty or whitespace
   };
   const userId = req.body.userId;
   const gender = req.body.gender.trim(); // Trim to remove whitespace

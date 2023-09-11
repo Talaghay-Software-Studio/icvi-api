@@ -43,35 +43,26 @@ User.create = (newUser, callback) => {
                   const userId = result.insertId; // Retrieve the auto-generated user ID
 
                   // Insert user details into the 'user_details' table
-                  // Check if gender and impairment_category are not empty or whitespace
-                  if (newUser.gender.trim() !== "" && newUser.impairment_category.trim() !== "") {
-                    dbConn.query(
-                      "INSERT INTO user_details (user_id, phone_number, name, gender, impairment_category, age) VALUES (?, ?, ?, ?, ?, ?)",
-                      [userId, newUser.phone_number, newUser.name, newUser.gender, newUser.impairment_category, newUser.age],
-                      (error, result) => {
-                        if (error) {
-                          console.error("Error inserting user details into database: ", error);
-                          return callback(error, null);
-                        } else {
-                          return callback(null, result);
-                        }
+                  dbConn.query(
+                    "INSERT INTO user_details (user_id, phone_number, name, gender, impairment_category, age, address) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [
+                      userId,
+                      newUser.phone_number,
+                      newUser.name,
+                      newUser.gender,
+                      newUser.impairment_category,
+                      newUser.age,
+                      newUser.address,
+                    ],
+                    (error, result) => {
+                      if (error) {
+                        console.error("Error inserting user details into database: ", error);
+                        return callback(error, null);
+                      } else {
+                        return callback(null, result);
                       }
-                    );
-                  } else {
-                    // Insert user details without gender and impairment_category
-                    dbConn.query(
-                      "INSERT INTO user_details (user_id, phone_number, name, age) VALUES (?, ?, ?, ?)",
-                      [userId, newUser.phone_number, newUser.name, newUser.age],
-                      (error, result) => {
-                        if (error) {
-                          console.error("Error inserting user details into database: ", error);
-                          return callback(error, null);
-                        } else {
-                          return callback(null, result);
-                        }
-                      }
-                    );
-                  }
+                    }
+                  );
                 }
               }
             );

@@ -23,6 +23,7 @@ exports.createUser = function (req, res) {
     impairment_category: req.body.impairment_category, // Add impairment_category from request
     category: req.body.category,
     age: req.body.age === 0 ? null : req.body.age, // Set age to null if it's 0
+    address: req.body.address.trim() || null, // Trim and set address to null if empty or whitespace
   };
 
   UserModel.create(newUser, (error, result) => {
