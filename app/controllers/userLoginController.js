@@ -48,4 +48,26 @@ userLoginController.checkEmail = async (req, res) => {
   }
 };
 
+userLoginController.logout = async (req, res) => {
+  const { email_or_username } = req.body;
+
+  try {
+    // Check if the user exists by email or username
+    const user = await UserModel.getByEmailOrUsername1(email_or_username);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Perform your logout actions here (e.g., clear session, update database, etc.)
+    // ...
+
+    // Send the "Successfully Logged Out" response
+    return res.status(200).json({ message: "Successfully Logged Out" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    return res.status(500).json({ message: "Error during logout" });
+  }
+};
+
 module.exports = userLoginController;
