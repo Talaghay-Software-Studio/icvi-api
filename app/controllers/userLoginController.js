@@ -34,6 +34,11 @@ userLoginController.checkEmail = async (req, res) => {
           username: user.username,
           name: userDetails.name,
           phone_number: userDetails.phone_number,
+          category: user.category,
+          gender: userDetails.gender,
+          impairment_category: userDetails.impairment_category,
+          age: userDetails.age,
+          address: userDetails.address,
           modified_at: user.modified_at,
           created_at: user.created_at
         }
@@ -45,6 +50,28 @@ userLoginController.checkEmail = async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).send("Error during login");
+  }
+};
+
+userLoginController.logout = async (req, res) => {
+  const { email_or_username } = req.body;
+
+  try {
+    // Check if the user exists by email or username
+    const user = await UserModel.getByEmailOrUsername1(email_or_username);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Perform your logout actions here (e.g., clear session, update database, etc.)
+    // ...
+
+    // Send the "Successfully Logged Out" response
+    return res.status(200).json({ message: "Successfully Logged Out" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    return res.status(500).json({ message: "Error during logout" });
   }
 };
 
