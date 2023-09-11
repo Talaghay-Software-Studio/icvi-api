@@ -32,6 +32,7 @@ const userUpdateRoute = require("./app/routes/userUpdateRoutes");
 const userFeedbackRoute = require("./app/routes/userFeedbackRoutes");
 const questionsRoutes = require("./app/routes/questionsRoutes");
 const analyticsRoutes = require("./app/routes/analyticsRoutes");
+const usersRoutes = require("./app/routes/userRoutes");
 
 //middlewares here
 app.use("/api/v1/signup", userSignupRoute)
@@ -41,6 +42,7 @@ app.use("/api/v1/update", userUpdateRoute)
 app.use("/api/v1/feedback", userFeedbackRoute)
 app.use("/api/v1/question", questionsRoutes)
 app.use("/api/v1/analytics", analyticsRoutes)
+app.use("/api/v1/users", usersRoutes)
 
 //port listening
 app.listen(port, () => {
