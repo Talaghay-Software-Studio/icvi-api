@@ -15,4 +15,19 @@ UserDetails.getAllUserNames = (result) => {
   });
 };
 
+UserDetails.searchUsersByName = (searchTerm, result) => {
+    const query = "SELECT name FROM user_details WHERE name LIKE ?";
+    const searchValue = `%${searchTerm}%`; // Add '%' around the search term to perform a partial match
+  
+    dbConn.query(query, [searchValue], (err, res) => {
+      if (err) {
+        console.error("Error searching for user names: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Retrieved matching user names");
+      result(null, res);
+    });
+  };
+
 module.exports = UserDetails;

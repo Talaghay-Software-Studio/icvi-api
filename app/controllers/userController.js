@@ -14,4 +14,16 @@ userController.getAllUsers = (req, res) => {
   });
 };
 
+userController.search = (req, res) => {
+    const searchTerm = req.query.search; // Assuming you are sending the search term as a query parameter
+    UserDetailsModel.searchUsersByName(searchTerm, (err, result) => {
+      if (err) {
+        console.error("Error searching for user names: ", err);
+        return res.status(500).json({ message: "Error searching for user names." });
+      }
+  
+      return res.status(200).json({ message: "Matching user names retrieved successfully.", userNames: result });
+    });
+  };
+
 module.exports = userController;
