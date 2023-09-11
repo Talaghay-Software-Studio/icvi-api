@@ -18,6 +18,19 @@ HistoryLocation.insertLocation = (userId, address, result) => {
   );
 };
 
+HistoryLocation.getAllData = (result) => {
+    dbConn.query('SELECT * FROM location_history', (err, res) => {
+      if (err) {
+        console.error('Error retrieving location history data: ', err);
+        result(err, null);
+        return;
+      }
+  
+      console.log('Retrieved all location history data');
+      result(null, res);
+    });
+  };
+
 HistoryLocation.getPercentageByUser = (result) => {
     const query = `
       SELECT user_id, address, COUNT(*) AS count,
