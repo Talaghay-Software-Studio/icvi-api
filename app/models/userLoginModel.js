@@ -41,6 +41,45 @@ UserModel.getByEmailOrUsername = (emailOrUsername) => {
   });
 };
 
+UserModel.getByEmailOrUsername1 = (emailOrUsername) => {
+  return new Promise((resolve, reject) => {
+    dbConn.query(
+      "SELECT * FROM user WHERE email_add = ? OR username = ?",
+      [emailOrUsername, emailOrUsername],
+      (error, result) => {
+        if (error) {
+          console.error("Error retrieving user by email or username: ", error);
+          reject(error);
+        } else {
+          if (result.length > 0) {
+            resolve(result[0]);
+          } else {
+            console.log("User not found by email, trying username...");
+
+            // If no results found by email, try again by username
+            dbConn.query(
+              "SELECT * FROM user WHERE username = ?",
+              [emailOrUsername],
+              (error, result) => {
+                if (error) {
+                  console.error("Error retrieving user by username: ", error);
+                  reject(error);
+                } else {
+                  if (result.length > 0) {
+                    resolve(result[0]);
+                  } else {
+                    resolve(null);
+                  }
+                }
+              }
+            );
+          }
+        }
+      }
+    );
+  });
+};
+
 UserModel.getUserDetails = (userId) => {
   return new Promise((resolve, reject) => {
     dbConn.query(
