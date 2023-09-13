@@ -1,4 +1,5 @@
 const HistoryLocationModel = require('../models/historyModel');
+const crypto = require('crypto');
 
 const historyController = {};
 
@@ -40,5 +41,62 @@ historyController.getAllData = (req, res) => {
       return res.status(200).json({ data: result });
     });
   };
+
+
+// Function to generate a session hash with a time-based component
+function generateSessionHash(scopeInMinutes) {
+  const currentTimestamp = Math.floor(Date.now() / (scopeInMinutes * 60 * 1000)); // Calculate current time in minutes
+  const dataToHash = `${currentTimestamp}`;
+  return crypto.createHash('sha256').update(dataToHash).digest('hex');
+}
+
+historyController.postCurrentLocation = (req, res) => {
+  const { user_id, longitude, latitude, scope } = req.body;
+  let { address } = req.body;
+
+  if (!user_id || !longitude || !latitude || !scope) {
+    return res.status(400).json({ message: 'User ID, longitude, latitude, and scope are required.' });
+  }
+
+  // Set a default value for address if it's empty or not provided
+  if (!address || address.trim() === '') {
+    address = 'Unnamed Location';
+  }
+  const session_hash = generateSessionHash(scope); // Generate a session hash with the specified scope
+
+  HistoryLocationModel.insertLocation(user_id, longitude, latitude, session_hash, address, (err, result) => {
+    if (err) {
+      console.error('Error inserting location data: ', err);
+      return res.status(500).json({ message: 'Error inserting location data.' });
+    }
+
+    return res.status(201).json({ message: 'Location data inserted successfully.', data: result });
+  });
+};
+
+historyController.getByUserIdLocation = (req, res) => {
+  // Get the userId from the request or wherever it is available
+  const userId = req.body.user_id; // Assuming userId is in the URL params
+
+  HistoryLocationModel.getByUserIdLocation(userId, (err, result) => {
+    if (err) {
+      console.error('Error retrieving location history data: ', err);
+      return res.status(500).json({ message: 'Error retrieving location history data.' });
+    }
+
+    return res.status(200).json({ message: 'Location history data retrieved successfully for user ID: ' + userId, data: result });
+  });
+};
+
+historyController.getAllSummaryByLocation = (req, res) => {
+  HistoryLocationModel.getAllSummaryByLocation((err, result) => {
+    if (err) {
+      console.error('Error retrieving location history data: ', err);
+      return res.status(500).json({ message: 'Error retrieving location history data.' });
+    }
+
+    return res.status(200).json({ message: 'Location history data retrieved successfully.', data: result });
+  });
+};
 
 module.exports = historyController;
