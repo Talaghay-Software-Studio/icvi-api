@@ -9,7 +9,7 @@ router.get("/showanalytics", historyLocation.getAnalytics);
 
 // Realtime Location
 router.post("/realtime", historyLocation.postCurrentLocation);
-router.get("/getbyuser", historyLocation.getByUserIdLocation);
+router.post("/getbyuser", historyLocation.getByUserIdLocation);
 router.get("/summary", historyLocation.getAllSummaryByLocation);
 
 
