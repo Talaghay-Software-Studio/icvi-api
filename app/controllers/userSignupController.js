@@ -3,12 +3,12 @@ const nodemailer = require("nodemailer");
 
 // Configure nodemailer with your email service credentials
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: "robertchristian.rosales@gmail.com",
-    pass: "lxkepxxjeixoymtu",
+    user: "developer.talaghay@gmail.com",
+    pass: "tcqslwipuknbeocc",
   },
 });
 
@@ -18,34 +18,39 @@ exports.createUser = function (req, res) {
     username: req.body.username,
     name: req.body.name,
     password: req.body.password,
-    phone_number: req.body.phone_number
+    phone_number: req.body.phone_number,
+    gender: req.body.gender, // Add gender from request
+    impairment_category: req.body.impairment_category, // Add impairment_category from request
+    category: req.body.category,
+    age: req.body.age === 0 ? null : req.body.age, // Set age to null if it's 0
+    address: req.body.address.trim() || null, // Trim and set address to null if empty or whitespace
   };
 
   UserModel.create(newUser, (error, result) => {
     if (error) {
-      if (error === 'Email address and username already exist') {
-        console.error('Error creating user: email and username already exist');
+      if (error === "Email address and username already exist") {
+        console.error("Error creating user: email and username already exist");
         return res.status(409).json({
-          error: 'Email address and username already exist',
-          message: 'Error creating user: email and username already exist'
+          error: "Email address and username already exist",
+          message: "Error creating user: email and username already exist",
         });
-      } else if (error === 'Email address already exists') {
-        console.error('Error creating user: email already exists');
+      } else if (error === "Email address already exists") {
+        console.error("Error creating user: email already exists");
         return res.status(409).json({
-          error: 'Email address already exists',
-          message: 'Error creating user: email already exists'
+          error: "Email address already exists",
+          message: "Error creating user: email already exists",
         });
-      } else if (error === 'Username already exists') {
-        console.error('Error creating user: username already exists');
+      } else if (error === "Username already exists") {
+        console.error("Error creating user: username already exists");
         return res.status(409).json({
-          error: 'Username already exists',
-          message: 'Error creating user: username already exists'
+          error: "Username already exists",
+          message: "Error creating user: username already exists",
         });
       } else {
         console.error("Error creating user: ", error);
         return res.status(500).json({
-          error: 'Internal Server Error',
-          message: 'Error creating user'
+          error: "Internal Server Error",
+          message: "Error creating user",
         });
       }
     } else {
@@ -56,8 +61,8 @@ exports.createUser = function (req, res) {
         from: "ICVI Tech Accounts <noreply@gmail.com>",
         to: newUser.email_add,
         subject: "Welcome to ICVI",
-        text: "You are now registered and may continue to login!"
-            };
+        text: "You are now registered and may continue to login!",
+      };
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -69,7 +74,7 @@ exports.createUser = function (req, res) {
 
       res.status(201).json({
         message: "User created successfully",
-        data: result
+        data: result,
       });
     }
   });

@@ -1,5 +1,5 @@
 const dbConn = require("../config/db.config");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const User = {};
 
@@ -44,8 +44,16 @@ User.create = (newUser, callback) => {
 
                   // Insert user details into the 'user_details' table
                   dbConn.query(
-                    "INSERT INTO user_details (user_id, phone_number, name) VALUES (?, ?, ?)",
-                    [userId, newUser.phone_number, newUser.name],
+                    "INSERT INTO user_details (user_id, phone_number, name, gender, impairment_category, age, address) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [
+                      userId,
+                      newUser.phone_number,
+                      newUser.name,
+                      newUser.gender,
+                      newUser.impairment_category,
+                      newUser.age,
+                      newUser.address,
+                    ],
                     (error, result) => {
                       if (error) {
                         console.error("Error inserting user details into database: ", error);
