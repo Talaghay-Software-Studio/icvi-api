@@ -4,7 +4,7 @@ const dbConn = require('../config/db.config');
 const UserDetails = {};
 
 UserDetails.getAllUserNames = (result) => {
-  dbConn.query("SELECT ud.user_id AS id, ud.name, u.email_add, ud.phone_number FROM user_details ud JOIN user u ON ud.user_id = u.id", (err, res) => {
+  dbConn.query("SELECT ud.user_id AS id, ud.name, u.username, u.email_add, ud.phone_number, ud.gender, ud.age, ud.address, ud.impairment_category FROM user_details ud JOIN user u ON ud.user_id = u.id", (err, res) => {
     if (err) {
       console.error("Error retrieving user names: ", err);
       result(err, null);
@@ -17,7 +17,7 @@ UserDetails.getAllUserNames = (result) => {
 
 
 UserDetails.searchUsersByName = (searchTerm, result) => {
-    const query = "SELECT name FROM user_details WHERE name LIKE ?";
+    const query = "SELECT * FROM user_details WHERE name LIKE ?";
     const searchValue = `%${searchTerm}%`; // Add '%' around the search term to perform a partial match
   
     dbConn.query(query, [searchValue], (err, res) => {
