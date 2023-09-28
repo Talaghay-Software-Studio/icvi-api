@@ -26,4 +26,17 @@ userController.search = (req, res) => {
     });
   };
 
+  userController.deleteUser = (req, res) => {
+    const userIdToDelete = req.query.id;
+  
+    UserDetailsModel.deleteUserById(userIdToDelete, (err) => {
+      if (err) {
+        console.error("Error deleting user and related records: ", err);
+        return res.status(500).json({ message: "Error deleting user and related records." });
+      }
+  
+      return res.status(200).json({ message: "User and related records deleted successfully." });
+    });
+  };
+
 module.exports = userController;
