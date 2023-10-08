@@ -40,7 +40,7 @@ UserDetails.searchUsersByName = (searchTerm, result) => {
       }
   
       // Delete from user_details table
-      const deleteUserDetailsQuery = 'DELETE FROM user_details WHERE id = ?';
+      const deleteUserDetailsQuery = 'DELETE FROM user_details WHERE user_id = ?';
       dbConn.query(deleteUserDetailsQuery, [userId], (err) => {
         if (err) {
           dbConn.rollback(() => {
@@ -69,24 +69,36 @@ UserDetails.searchUsersByName = (searchTerm, result) => {
               });
             }
   
-            // Commit the transaction if all deletions were successful
-            dbConn.commit((err) => {
+            // Delete from user table
+            const deleteUserQuery = 'DELETE FROM user WHERE id = ?';
+            dbConn.query(deleteUserQuery, [userId], (err) => {
               if (err) {
                 dbConn.rollback(() => {
-                  console.error("Error committing the transaction: ", err);
+                  console.error("Error deleting from user table: ", err);
                   return callback(err);
                 });
               }
   
-              // Transaction completed successfully
-              console.log("User and related records deleted successfully.");
-              callback(null);
+              // Commit the transaction if all deletions were successful
+              dbConn.commit((err) => {
+                if (err) {
+                  dbConn.rollback(() => {
+                    console.error("Error committing the transaction: ", err);
+                    return callback(err);
+                  });
+                }
+  
+                // Transaction completed successfully
+                console.log("User and related records deleted successfully.");
+                callback(null);
+              });
             });
           });
         });
       });
     });
   };
+  
   
 
 module.exports = UserDetails;
