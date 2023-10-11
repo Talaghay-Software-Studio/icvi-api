@@ -89,8 +89,8 @@ exports.forgotPassword = (req, res) => {
         port: 587,
         secure: false,
         auth: {
-          user: "developer.talaghay@gmail.com",
-          pass: "tcqslwipuknbeocc",
+          user: "carandang.kambal@gmail.com",
+          pass: "rvttvfzqardelglc",
         },
       });
 
