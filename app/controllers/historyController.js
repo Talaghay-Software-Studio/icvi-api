@@ -74,9 +74,24 @@ historyController.postCurrentLocation = (req, res) => {
   });
 };
 
+// historyController.getByUserIdLocation = (req, res) => {
+//   // Get the userId from the request or wherever it is available
+//   const userId = req.body.user_id; // Assuming userId is in the URL params
+
+//   HistoryLocationModel.getByUserIdLocation(userId, (err, result) => {
+//     if (err) {
+//       console.error('Error retrieving location history data: ', err);
+//       return res.status(500).json({ message: 'Error retrieving location history data.' });
+//     }
+
+//     return res.status(200).json({ message: 'Location history data retrieved successfully for user ID: ' + userId, data: result });
+//   });
+// };
+
+const geolib = require('geolib'); // Install the geolib library using: npm install geolib
+
 historyController.getByUserIdLocation = (req, res) => {
-  // Get the userId from the request or wherever it is available
-  const userId = req.body.user_id; // Assuming userId is in the URL params
+  const userId = req.body.user_id;
 
   HistoryLocationModel.getByUserIdLocation(userId, (err, result) => {
     if (err) {
@@ -84,7 +99,24 @@ historyController.getByUserIdLocation = (req, res) => {
       return res.status(500).json({ message: 'Error retrieving location history data.' });
     }
 
-    return res.status(200).json({ message: 'Location history data retrieved successfully for user ID: ' + userId, data: result });
+    // Calculate distance traveled for each session in the result
+    const resultWithDistance = result.map(session => {
+      const distance = geolib.getDistance(
+        { latitude: session.point_a.latitude, longitude: session.point_a.longitude },
+        { latitude: session.point_b.latitude, longitude: session.point_b.longitude }
+      );
+
+      // Convert distance from meters to kilometers
+      const distanceInKm = distance / 1000;
+
+      // Add the distance_traveled property to the session
+      return {
+        ...session,
+        distance_traveled: distanceInKm,
+      };
+    });
+
+    return res.status(200).json({ message: 'Location history data retrieved successfully for user ID: ' + userId, data: resultWithDistance });
   });
 };
 
